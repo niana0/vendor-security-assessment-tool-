@@ -55,6 +55,7 @@ output/
 *.md
 !README.md
 !WEB_SEARCH_UPGRADE.md
+!CLAUDE_SKILL.md
 
 # Temporary files
 *.tmp
