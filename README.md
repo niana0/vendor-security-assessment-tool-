@@ -22,7 +22,7 @@ Automate vendor security reviews by extracting answers from vendor artifacts and
 ### Step 1: Open Terminal and Navigate to Project Directory
 
 ```bash
-cd "/Users/ana.ni/Documents/Obsidian Vault/Claude Code projects/Heydar's version (vendor reviews)"
+cd "/Users/ana.ni/Documents/Obsidian Vault/Claude Code projects/Vendor Review Tool v3"
 ```
 
 Or navigate to wherever you've saved this project.
