@@ -22,10 +22,8 @@ Automate vendor security reviews by extracting answers from vendor artifacts and
 ### Step 1: Open Terminal and Navigate to Project Directory
 
 ```bash
-cd "/Users/ana.ni/Documents/Obsidian Vault/Claude Code projects/Vendor Review Tool v3"
+cd "[project directory where you've sved this project"
 ```
-
-Or navigate to wherever you've saved this project.
 
 ### Step 2: Create a Virtual Environment
 
