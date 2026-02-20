@@ -22,7 +22,7 @@ Automate vendor security reviews by extracting answers from vendor artifacts and
 ### Step 1: Open Terminal and Navigate to Project Directory
 
 ```bash
-cd "[project directory where you've sved this project"
+cd "[project directory where you've sved this project]"
 ```
 
 ### Step 2: Create a Virtual Environment
