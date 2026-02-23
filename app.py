@@ -15,6 +15,7 @@ from src.questionnaire_mapper import QuestionnaireMapper
 from src.risk_assessor import RiskAssessor
 from src.web_search_agent import WebSearchAgent
 from src.vendor_overview_extractor import VendorOverviewExtractor
+from src.atlassian_mcp_integration import AtlassianMCPIntegration
 
 
 # Page config
@@ -151,6 +152,19 @@ def process_documents(vendor_files, questionnaire_file, vendor_metadata, progres
         temp_dir = tempfile.mkdtemp()
         output_dir = "output"
         os.makedirs(output_dir, exist_ok=True)
+
+        # Step 0: Integrate Jira/Rovo data if available
+        if st.session_state.get('jira_data'):
+            status_text.text("📊 Integrating Jira/Rovo data...")
+            progress_bar.progress(5)
+
+            jira_integration = AtlassianMCPIntegration()
+            vendor_metadata = jira_integration.update_vendor_metadata(
+                vendor_metadata,
+                st.session_state.jira_data
+            )
+            results['vendor_metadata'] = vendor_metadata
+            results['jira_data'] = st.session_state.jira_data
 
         evidence = []
 
@@ -810,6 +824,36 @@ def main():
                 help="Full legal name of the vendor",
                 key="vendor_name_input"
             )
+
+            # Jira/Rovo Integration
+            use_jira = st.checkbox(
+                "🔗 Fetch data from Jira/Rovo Agent",
+                help="Pull vendor information from Jira tickets and Rovo agent",
+                key="use_jira_checkbox"
+            )
+
+            if use_jira and vendor_name:
+                with st.spinner(f"Fetching data from Jira for {vendor_name}..."):
+                    try:
+                        jira_integration = AtlassianMCPIntegration()
+                        jira_data = jira_integration.get_vendor_overview_from_jira(vendor_name)
+
+                        if jira_data:
+                            st.success(f"✅ Found {jira_data.get('jira_tickets_found', 0)} Jira tickets")
+
+                            # Show summary of Jira data
+                            if jira_data.get('security_issues'):
+                                st.warning(f"⚠️ {len(jira_data['security_issues'])} security issues found in Jira")
+                            if jira_data.get('privacy_concerns'):
+                                st.info(f"ℹ️ {len(jira_data['privacy_concerns'])} privacy concerns found")
+
+                            # Store Jira data in session state
+                            st.session_state.jira_data = jira_data
+                        else:
+                            st.info("ℹ️ No Jira tickets found for this vendor")
+                    except Exception as e:
+                        st.warning(f"⚠️ Jira integration error: {str(e)}")
+                        st.caption("Make sure ATLASSIAN_URL, ATLASSIAN_EMAIL, and ATLASSIAN_API_TOKEN are set in .env")
 
             in_scope_services = st.text_area(
                 "In-scope services provided to Datadog *",
